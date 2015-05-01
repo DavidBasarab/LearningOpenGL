@@ -15,6 +15,8 @@ public:
     void Update();
 
     bool IsClosed();
+
+    void Clear(float red, float green, float blue, float alpha);
 protected:
 private:
     Display(const Display& other) {}

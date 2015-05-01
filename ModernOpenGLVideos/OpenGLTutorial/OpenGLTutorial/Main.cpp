@@ -14,10 +14,8 @@ int main(int argc, char** argv)
     {
         loops++;
 
-        glClearColor(startingRed, 0.14f, startingBlue, 1.0f);
+        display.Clear(startingRed, 0.14f, startingBlue, 1.0f);
         
-        glClear(GL_COLOR_BUFFER_BIT);
-
         display.Update();
 
         if (loops % 10 == 0)
