@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoreLearning", "MoreLearning\MoreLearning.csproj", "{14F1D755-0488-4940-8BC3-7C6AF0594D31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GLApplication", "GLApplication\GLApplication.csproj", "{94ACC86E-B772-4776-A651-21EDCCE0E370}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{14F1D755-0488-4940-8BC3-7C6AF0594D31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14F1D755-0488-4940-8BC3-7C6AF0594D31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14F1D755-0488-4940-8BC3-7C6AF0594D31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14F1D755-0488-4940-8BC3-7C6AF0594D31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94ACC86E-B772-4776-A651-21EDCCE0E370}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94ACC86E-B772-4776-A651-21EDCCE0E370}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94ACC86E-B772-4776-A651-21EDCCE0E370}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94ACC86E-B772-4776-A651-21EDCCE0E370}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
