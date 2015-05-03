@@ -1,10 +1,13 @@
 #include <iostream>
 #include "Display.h"
 #include <GL/glew.h>
+#include "Shader.h"
 
 int main(int argc, char** argv)
 {
     Display display(800, 600, "Hello World");
+
+    Shader shader(".//res/basicShader");
 
     float startingBlue = 0.3f;
     float startingRed = 0.0f;
