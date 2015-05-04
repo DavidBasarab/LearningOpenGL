@@ -37,5 +37,6 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="CImg.h" />
   </ItemGroup>
 </Project>

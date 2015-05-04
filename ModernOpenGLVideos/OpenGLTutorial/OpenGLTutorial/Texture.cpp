@@ -3,20 +3,24 @@
 #define STB_IMAGE_IMPLEMENTATION    
 #include "stb_image.h"
 
+#include "CImg.h"
+using namespace cimg_library;
 
 #include <cassert>
 #include <iostream>
 
 Texture::Texture(const std::string& fileName)
 {
-    int width, height, numComponents;
+    //int width, height, numComponents;
 
-    stbi_uc* imageData = stbi_load((fileName).c_str(), &width, &height, &numComponents, 4);
+    CImg<unsigned char> image(fileName.c_str());
 
-    if (imageData == NULL)
-    {
-        std::cerr << "Texture loading failed for texture: " << fileName << std::endl;
-    }
+    //stbi_uc* imageData = stbi_load((fileName).c_str(), &width, &height, &numComponents, 4);
+
+    //if (imageData == NULL)
+    //{
+      //  std::cerr << "Texture loading failed for texture: " << fileName << std::endl;
+    //}
 
     // Create a texture pointer on the graphics device
     glGenTextures(1, &_texture);
@@ -28,15 +32,18 @@ Texture::Texture(const std::string& fileName)
     // s is outside texture width, when it goes outside the width or the height,
     // it will just repeat the image over and over.
     // THis could be default behavor
-    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    
+    //glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    //glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    glTextureParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTextureParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //glTextureParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //glTextureParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    stbi_image_free(imageData);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 512, 512, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+    //stbi_image_free(imageData);
 }
 
 
