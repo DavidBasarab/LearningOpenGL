@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 #include <iostream>
 #include "Transform.h"
+#include "Camera.h"
 
 
 #pragma once
@@ -15,7 +16,7 @@ public:
 
     void Bind();
 
-    void Update(const Transform& transform);
+    void Update(const Transform& transform, const Camera& camera);
 
     virtual ~Shader();
 

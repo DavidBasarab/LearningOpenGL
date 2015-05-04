@@ -123,6 +123,7 @@ xcopy  "$(ProjectDir)NeededDLL"  "$(OutDir)" /s /e /y</Command>
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="CImg.h" />
     <ClInclude Include="Display.h" />
     <ClInclude Include="Mesh.h" />
