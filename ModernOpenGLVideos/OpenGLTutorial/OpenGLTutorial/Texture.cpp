@@ -17,10 +17,10 @@ Texture::Texture(const std::string& fileName)
 
     //stbi_uc* imageData = stbi_load((fileName).c_str(), &width, &height, &numComponents, 4);
 
-    //if (imageData == NULL)
-    //{
-      //  std::cerr << "Texture loading failed for texture: " << fileName << std::endl;
-    //}
+    if (image == NULL)
+    {
+        std::cerr << "Texture loading failed for texture: " << fileName << std::endl;
+    }
 
     // Create a texture pointer on the graphics device
     glGenTextures(1, &_texture);
@@ -33,13 +33,14 @@ Texture::Texture(const std::string& fileName)
     // it will just repeat the image over and over.
     // THis could be default behavor
     
-    //glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    //glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // Don't know why but the Parameteri stuff causes an error
+    /*glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);*/
 
-    //glTextureParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     //glTextureParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 512, 512, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 

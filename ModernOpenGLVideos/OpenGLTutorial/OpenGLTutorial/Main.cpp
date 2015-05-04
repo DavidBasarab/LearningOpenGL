@@ -24,11 +24,14 @@ int main(int argc, char** argv)
     Shader shader("./res/basicShader");
 
     //Texture texture("./res/bricks.jpg");
-    Texture texture("F:\\Code\\LearningOpenGL\\ModernOpenGLVideos\\OpenGLTutorial\\Debug\\res\\bricks.bmp");
+    //Texture texture("F:\\Code\\LearningOpenGL\\ModernOpenGLVideos\\OpenGLTutorial\\Debug\\res\\bricks.bmp");
+    Texture texture("./res/bricks.bmp");
     
     float startingBlue = 0.3f;
     float startingRed = 0.0f;
     int loops = 0;
+
+    std::cout << "Running Version " << glGetString(GL_VERSION) << std::endl;
 
     while (!display.IsClosed())
     {
@@ -39,13 +42,13 @@ int main(int argc, char** argv)
         display.Clear(startingRed, 0.14f, startingBlue, 1.0f);
 
         shader.Bind();
+        texture.Bind(0);
         mesh.Draw();
         
         
         display.Update();
 
-        /*
-        if (loops % 10 == 0)
+        /*if (loops % 100 == 0)
         {
             startingBlue += 0.1f;
 
@@ -60,8 +63,7 @@ int main(int argc, char** argv)
             {
                 startingRed = 0.0f;
             }
-        }
-        */
+        }*/
     }
 
     return 0;
