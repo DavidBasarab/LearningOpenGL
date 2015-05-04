@@ -1,8 +1,14 @@
 #version 430
 
 attribute vec3 position;
+attribute vec2 texCoord;
+
+varying vec2 texCoord0;
 
 void main()
 {
     gl_Position = vec4(position, 1.0);
+	
+	// Saving so the Fragment shader can pick up on the value
+	texCoord0 = texCoord;
 }
