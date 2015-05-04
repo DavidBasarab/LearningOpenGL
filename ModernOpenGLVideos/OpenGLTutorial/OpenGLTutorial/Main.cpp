@@ -23,8 +23,6 @@ int main(int argc, char** argv)
 
     Shader shader("./res/basicShader");
 
-    //Texture texture("./res/bricks.jpg");
-    //Texture texture("F:\\Code\\LearningOpenGL\\ModernOpenGLVideos\\OpenGLTutorial\\Debug\\res\\bricks.bmp");
     Texture texture("./res/bricks.bmp");
     
     float startingBlue = 0.3f;
