@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include "Shader.h"
 #include "Mesh.h"
+#include "Texture.h"
 
 // OpenGl coordinates are -1 to 1,
 // -1 left of the screen 1 is right of the screen
@@ -22,6 +23,8 @@ int main(int argc, char** argv)
 
     Shader shader("./res/basicShader");
 
+    Texture texture("./res/bricks.jpg");
+    
     float startingBlue = 0.3f;
     float startingRed = 0.0f;
     int loops = 0;
