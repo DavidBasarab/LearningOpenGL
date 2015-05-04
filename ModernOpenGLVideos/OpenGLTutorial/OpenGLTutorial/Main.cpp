@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 
     Shader shader("./res/basicShader");
 
-    Texture texture("./res/bricks.jpg");
+    //Texture texture("./res/bricks.jpg");
     
     float startingBlue = 0.3f;
     float startingRed = 0.0f;

@@ -63,7 +63,9 @@
     <PostBuildEvent>
       <Command>xcopy  "$(ProjectDir)res"  "$(OutDir)res" /s /e /y
 
-xcopy  "$(ProjectDir)glew32.dll"  "$(OutDir)glew32.dll" /s /e /y</Command>
+xcopy  "$(ProjectDir)NeededDLL\glew32.dll"  "$(OutDir)glew32.dll" /s /e /y
+
+xcopy  "$(ProjectDir)NeededDLL\SDL2.dll"  "$(OutDir)SDL2.dll" /s /e /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
