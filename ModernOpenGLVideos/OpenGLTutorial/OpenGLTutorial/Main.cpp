@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "Mesh.h"
 #include "Texture.h"
+#include "Transform.h"
 
 // OpenGl coordinates are -1 to 1,
 // -1 left of the screen 1 is right of the screen
@@ -24,16 +25,25 @@ int main(int argc, char** argv)
     Shader shader("./res/basicShader");
 
     Texture texture("./res/bricks.bmp");
+
+    Transform transform(glm::vec3(), glm::vec3(), glm::vec3(1.0f, 1.0f, 1.0f));
     
     float startingBlue = 0.3f;
     float startingRed = 0.0f;
     int loops = 0;
 
+    float counter = 0.0f;
+
     std::cout << "Running Version " << glGetString(GL_VERSION) << std::endl;
 
     while (!display.IsClosed())
     {
-        
+        float sinCounter = sinf(counter);
+        float cosCounter = cosf(counter);
+
+        transform.GetPos().x = sinCounter;
+        transform.GetRot().z = counter;
+        transform.SetScale(glm::vec3(cosCounter, cosCounter, cosCounter));
 
         loops++;
 
@@ -41,10 +51,12 @@ int main(int argc, char** argv)
 
         shader.Bind();
         texture.Bind(0);
+        shader.Update(transform);
         mesh.Draw();
         
-        
         display.Update();
+
+        counter += 0.0001f;
 
         /*if (loops % 100 == 0)
         {
