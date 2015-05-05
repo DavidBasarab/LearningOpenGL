@@ -7,8 +7,8 @@
 #include "Transform.h"
 #include "Camera.h"
 
-#define WIDTH 800
-#define HEIGHT 600
+#define WIDTH 1920
+#define HEIGHT 1080
 
 // OpenGl coordinates are -1 to 1,
 // -1 left of the screen 1 is right of the screen
@@ -16,7 +16,7 @@
 
 int main(int argc, char** argv)
 {
-    Display display(800, 600, "Hello World");
+    Display display(WIDTH, HEIGHT, "Hello World");
 
     Vertex vertices[] = { 
                             Vertex(glm::vec3(-0.5, -0.5, 0), glm::vec2(0, 0)),
@@ -24,7 +24,12 @@ int main(int argc, char** argv)
                             Vertex(glm::vec3(0.5, -0.5, 0), glm::vec2(1.0, 0.0)),
     
                         };
-    Mesh mesh(vertices, sizeof(vertices) / sizeof(vertices[0]));
+
+    unsigned int indices[] = { 0, 1, 2 };
+    
+    Mesh mesh(vertices, sizeof(vertices) / sizeof(vertices[0]), indices, sizeof(indices) / sizeof(indices[0]));
+
+    Mesh mesh2("./res/monkey3.obj");
 
     Shader shader("./res/basicShader");
 
@@ -34,7 +39,7 @@ int main(int argc, char** argv)
 
     float aspectRatio = (float)WIDTH/(float)HEIGHT;
 
-    Camera camera(glm::vec3(0.0f, 0.0f, -3.0f), 70.0f, aspectRatio, 0.01f, 1000.0f);
+    Camera camera(glm::vec3(0.0f, 0.0f, -5.0f), 70.0f, aspectRatio, 0.01f, 1000.0f);
     
     float startingBlue = 0.3f;
     float startingRed = 0.0f;
@@ -44,6 +49,8 @@ int main(int argc, char** argv)
 
     std::cout << "Running Version " << glGetString(GL_VERSION) << std::endl;
 
+    const float rotationFactor = 1.0f;
+
     while (!display.IsClosed())
     {
         float sinCounter = sinf(counter);
@@ -51,9 +58,9 @@ int main(int argc, char** argv)
 
         transform.GetPos().x = sinCounter;
         transform.GetPos().z = cosCounter;
-        transform.GetRot().z = counter * 5;
-        transform.GetRot().y = counter * 5;
-        transform.GetRot().x = counter * 5;
+        transform.GetRot().z = counter * rotationFactor;
+        transform.GetRot().y = counter * rotationFactor;
+        transform.GetRot().x = counter * rotationFactor;
         //transform.SetScale(glm::vec3(cosCounter, cosCounter, cosCounter));
 
         loops++;
@@ -63,7 +70,8 @@ int main(int argc, char** argv)
         shader.Bind();
         texture.Bind(0);
         shader.Update(transform, camera);
-        mesh.Draw();
+        //mesh.Draw();
+        mesh2.Draw();
         
         display.Update();
 

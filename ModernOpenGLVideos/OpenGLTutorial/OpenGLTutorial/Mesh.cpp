@@ -1,27 +1,42 @@
 #include "Mesh.h"
 #include <vector>
+#include <iostream>
+#include "obj_loader.h"
 
 
-Mesh::Mesh(Vertex* vertices, unsigned int numVertices)
+Mesh::Mesh(const std::string& fileName)
 {
-    _drawCount = numVertices;
+    IndexedModel model = OBJModel(fileName).ToIndexedModel();
+
+    InitializeMesh(model);
+}
+
+Mesh::Mesh(Vertex* vertices, unsigned int numVertices, unsigned int* indices, unsigned int numIndices)
+{
+    IndexedModel model;
+
+    for (unsigned int i = 0; i < numVertices; i++)
+    {
+        model.positions.push_back(vertices[i].pos);
+        model.texCoords.push_back(vertices[i].texCoord);
+    }
+
+    for (unsigned int i = 0; i < numIndices; i++)
+    {
+        model.indices.push_back(indices[i]);
+    }
+
+    InitializeMesh(model);
+}
+
+void Mesh::InitializeMesh(const IndexedModel& model)
+{
+    _drawCount = model.indices.size();
 
     glGenVertexArrays(1, &_vertexArrayObject);
 
     // Bind all vertex array changes to this object
     glBindVertexArray(_vertexArrayObject);
-
-    std::vector<glm::vec3> positions;
-    std::vector<glm::vec2> texCoords;
-
-    positions.reserve(numVertices);
-    texCoords.reserve(numVertices);
-
-    for (unsigned int i = 0; i < numVertices; i++)
-    {
-        positions.push_back(vertices[i].pos);
-        texCoords.push_back(vertices[i].texCoord);
-    }
 
     // Get a block of data on the GPU we can bind too
     glGenBuffers(NUM_BUFFERS, _vertextArrayBuffers);
@@ -30,31 +45,36 @@ Mesh::Mesh(Vertex* vertices, unsigned int numVertices)
 
     // THis function will define it as an array to open GL
     glBindBuffer(GL_ARRAY_BUFFER, _vertextArrayBuffers[POSITION_VB]);
-    
+
     // Moving data from RAM to GPU memory
-    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(positions[0]), &positions[0], GL_STATIC_DRAW); // Static draw means the GPU knows it will never change
+    glBufferData(GL_ARRAY_BUFFER, model.positions.size() * sizeof(model.positions[0]), &model.positions[0], GL_STATIC_DRAW); // Static draw means the GPU knows it will never change
 
     // Divide our data into an attribute
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);  // All the infor needed to draw the vertexs
 
-    
+
     // THis function will define it as an array to open GL
     glBindBuffer(GL_ARRAY_BUFFER, _vertextArrayBuffers[TEXCOOR_VB]);
 
     // Moving data from RAM to GPU memory
-    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(texCoords[0]), &texCoords[0], GL_STATIC_DRAW); // Static draw means the GPU knows it will never change
+    glBufferData(GL_ARRAY_BUFFER, model.positions.size() *sizeof(model.texCoords[0]), &model.texCoords[0], GL_STATIC_DRAW); // Static draw means the GPU knows it will never change
 
     // Divide our data into an attribute
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);  // All the infor needed to draw the vertexs
+
+    // THis function will define it as an array to open GL
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _vertextArrayBuffers[INDEX_VB]);
+
+    // Moving data from RAM to GPU memory
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, model.indices.size() * sizeof(model.indices[0]), &model.indices[0], GL_STATIC_DRAW); // Static draw means the GPU knows it will never change
 
 
     // This will no longer bind any vertex array changes to this object
     // This makes it impossible to run on threads
     glBindVertexArray(0);
 }
-
 
 Mesh::~Mesh()
 {
@@ -67,8 +87,9 @@ void Mesh::Draw()
     // Bind all vertex array changes to this object
     glBindVertexArray(_vertexArrayObject);
 
+    glDrawElements(GL_TRIANGLES, _drawCount, GL_UNSIGNED_INT, 0);
 
-    glDrawArrays(GL_TRIANGLES, 0, _drawCount); 
+    //glDrawArrays(GL_TRIANGLES, 0, _drawCount); 
 
     // This will no longer bind any vertex array changes to this object
     // This makes it impossible to run on threads
