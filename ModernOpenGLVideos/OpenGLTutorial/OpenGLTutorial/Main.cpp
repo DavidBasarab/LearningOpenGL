@@ -51,9 +51,9 @@ int main(int argc, char** argv)
 
         transform.GetPos().x = sinCounter;
         transform.GetPos().z = cosCounter;
-        transform.GetRot().z = counter;
-        transform.GetRot().y = counter;
-        transform.GetRot().x = counter;
+        transform.GetRot().z = counter * 5;
+        transform.GetRot().y = counter * 5;
+        transform.GetRot().x = counter * 5;
         //transform.SetScale(glm::vec3(cosCounter, cosCounter, cosCounter));
 
         loops++;
@@ -67,7 +67,7 @@ int main(int argc, char** argv)
         
         display.Update();
 
-        counter += 0.0001f;
+        counter += 0.01f;
 
         /*if (loops % 100 == 0)
         {
