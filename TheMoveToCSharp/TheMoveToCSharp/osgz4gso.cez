@@ -10,10 +10,10 @@ namespace TheMoveToCSharp
     {
         private const float STARTING_BLUE = 0.3f;
         private const float STARTING_RED = 0.0f;
-        private float _blue;
-        private int _loopCount;
-        private float _red;
+        private int _loopCount = 0;
+        private readonly float _blue;
         private readonly GameWindow _gameWindow;
+        private readonly float _red;
         public int Height { get; private set; }
         public int Width { get; private set; }
 
@@ -42,16 +42,6 @@ namespace TheMoveToCSharp
 
         private void DetermineBackGroundColor()
         {
-            if (_loopCount % 10 == 0)
-            {
-                _red += 0.1f;
-                _blue += 0.1f;
-
-                if (_red > 1.0f) _red = STARTING_RED;
-
-                if (_blue > 1.0f) _blue = STARTING_BLUE;
-            }
-
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
             GL.ClearColor(_red, 0.14f, _blue, 1.0f);
