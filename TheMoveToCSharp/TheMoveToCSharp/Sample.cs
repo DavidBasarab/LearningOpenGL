@@ -6,7 +6,7 @@ using OpenTK.Input;
 
 namespace TheMoveToCSharp
 {
-    public class Display
+    public class Sample
     {
         private const float STARTING_BLUE = 0.3f;
         private const float STARTING_RED = 0.0f;
@@ -17,7 +17,7 @@ namespace TheMoveToCSharp
         public int Height { get; private set; }
         public int Width { get; private set; }
 
-        public Display(int width, int height)
+        public Sample(int width, int height)
         {
             Width = width;
             Height = height;
@@ -60,6 +60,23 @@ namespace TheMoveToCSharp
         private void OnLoad(object sender, EventArgs e)
         {
             _gameWindow.VSync = VSyncMode.On;
+
+            var shader = new Shader();
+
+            var vertexShader = new ShaderProgram()
+            {
+                LocationToShader = string.Format(@"{0}\Resources\BasicVertexShader.vsl", Environment.CurrentDirectory),
+                ShaderType = ShaderType.VertexShader
+            };
+
+            var fragmentShader = new ShaderProgram()
+            {
+                LocationToShader = string.Format(@"{0}\Resources\BasicFragmentShader.fsl", Environment.CurrentDirectory),
+                ShaderType = ShaderType.FragmentShader
+            };
+
+            var shadersLoaded = shader.LoadShaders(vertexShader, fragmentShader);
+
         }
 
         private void OnRenderFrame(object sender, FrameEventArgs e)

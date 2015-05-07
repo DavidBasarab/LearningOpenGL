@@ -99,9 +99,9 @@ namespace TheMoveToCSharp
 
         private static void RunSample()
         {
-            var display = new Display(800, 600);
+            var sample = new Sample(800, 600);
 
-            display.Run();
+            sample.Run();
         }
 
         private static void StartGameLoop()
