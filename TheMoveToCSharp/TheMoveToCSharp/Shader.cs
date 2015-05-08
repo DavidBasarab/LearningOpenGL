@@ -42,7 +42,7 @@ namespace TheMoveToCSharp
 
             _vertexShaderId = CreateShaderOnTheGpu(vertexShader.GetSource(), ShaderType.VertexShader);
 
-            GL.BindAttribLocation(_program, 0, "position");
+            GL.BindAttribLocation(_program, 1, "position");
 
             // Need to bind attributes
             Console.WriteLine("Created VertexShaderId = {0}", _vertexShaderId);

@@ -43,8 +43,12 @@ namespace TheMoveToCSharp
             //GL.DeleteBuffers();
         }
 
+        private Vector3 _rotation;
+
         public void InitializeVertexBuffers()
         {
+            _rotation = new Vector3(0, 0, 0);
+
             _vertexBuffer = new[]
                             {
                                     new Vertex(new Vector2(0, 0), new Vector2(0, 0)),
@@ -84,9 +88,15 @@ namespace TheMoveToCSharp
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
         }
 
-        public void Render()
+        public void Render(double time)
         {
             var world = Matrix4.CreateTranslation(200, 200, 0);
+
+            //_rotation.Y = _rotation.Y + 10.0f * (float)time;
+
+            //var rotationMatrix = Matrix4.CreateRotationY(_rotation.Y);
+
+            //world = world * rotationMatrix;
 
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadMatrix(ref world);

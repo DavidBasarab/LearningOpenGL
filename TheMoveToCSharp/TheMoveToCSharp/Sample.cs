@@ -13,10 +13,10 @@ namespace TheMoveToCSharp
         private const float STARTING_RED = 0.0f;
         private float _blue;
         private int _loopCount;
+        private Mesh _mesh;
         private float _red;
         private Shader _shader;
         private readonly GameWindow _gameWindow;
-        private Mesh _mesh;
         public int Height { get; private set; }
         public int Width { get; private set; }
 
@@ -44,6 +44,13 @@ namespace TheMoveToCSharp
             _gameWindow.Run(60, 60);
         }
 
+        private void CreateMesh()
+        {
+            _mesh = new Mesh();
+
+            _mesh.InitializeVertexBuffers();
+        }
+
         private void DetermineBackGroundColor()
         {
             if (_loopCount % 10 == 0)
@@ -59,22 +66,6 @@ namespace TheMoveToCSharp
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
             GL.ClearColor(_red, 0.14f, _blue, 1.0f);
-        }
-
-        private void OnLoad(object sender, EventArgs e)
-        {
-            _gameWindow.VSync = VSyncMode.On;
-
-            LoadShaders();
-
-            CreateMesh();
-        }
-
-        private void CreateMesh()
-        {
-            _mesh = new Mesh();
-
-            _mesh.InitializeVertexBuffers();
         }
 
         private void LoadShaders()
@@ -96,6 +87,15 @@ namespace TheMoveToCSharp
             //var shadersLoaded = _shader.LoadShaders(vertexShader, fragmentShader);
         }
 
+        private void OnLoad(object sender, EventArgs e)
+        {
+            _gameWindow.VSync = VSyncMode.On;
+
+            LoadShaders();
+
+            CreateMesh();
+        }
+
         private void OnRenderFrame(object sender, FrameEventArgs e)
         {
             _loopCount++;
@@ -110,7 +110,13 @@ namespace TheMoveToCSharp
             GL.LoadMatrix(ref projection);
 
             //_shader.Bind();
-            _mesh.Render();
+            _mesh.Render(e.Time);
+
+            var modelview = Matrix4.LookAt(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
+
+            GL.MatrixMode(MatrixMode.Modelview);
+
+            GL.LoadMatrix(ref modelview);
 
             GL.Flush();
 
@@ -119,7 +125,13 @@ namespace TheMoveToCSharp
 
         private void OnResize(object sender, EventArgs e)
         {
-            GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
+            GL.Viewport(_gameWindow.ClientRectangle.X, _gameWindow.ClientRectangle.Y, _gameWindow.ClientRectangle.Width, _gameWindow.ClientRectangle.Height);
+
+            var projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1.0f, 64.0f);
+
+            GL.MatrixMode(MatrixMode.Projection);
+
+            GL.LoadMatrix(ref projection);
         }
 
         private void OnUnload(object sender, EventArgs e)
