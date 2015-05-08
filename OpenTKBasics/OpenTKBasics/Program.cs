@@ -13,9 +13,9 @@ namespace OpenTKBasics
 
             window.Run();
 
-            Console.WriteLine("Press any key to exit. . . . . .");
+            //Console.WriteLine("Press any key to exit. . . . . .");
 
-            Console.ReadKey(false);
+            //Console.ReadKey(false);
         }
     }
 }
