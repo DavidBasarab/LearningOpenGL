@@ -13,7 +13,9 @@ namespace TheMoveToCSharp
         private float _blue;
         private int _loopCount;
         private float _red;
+        private Shader _shader;
         private readonly GameWindow _gameWindow;
+        private Mesh _mesh;
         public int Height { get; private set; }
         public int Width { get; private set; }
 
@@ -30,6 +32,7 @@ namespace TheMoveToCSharp
             _gameWindow.RenderFrame += OnRenderFrame;
             _gameWindow.Load += OnLoad;
             _gameWindow.Resize += OnResize;
+            _gameWindow.Unload += OnUnload;
 
             _red = STARTING_RED;
             _blue = STARTING_BLUE;
@@ -61,22 +64,35 @@ namespace TheMoveToCSharp
         {
             _gameWindow.VSync = VSyncMode.On;
 
-            var shader = new Shader();
+            LoadShaders();
+
+            CreateMesh();
+        }
+
+        private void CreateMesh()
+        {
+            _mesh = new Mesh();
+
+            _mesh.InitializeVertexBuffers();
+        }
+
+        private void LoadShaders()
+        {
+            _shader = new Shader();
 
             var vertexShader = new ShaderProgram()
-            {
-                LocationToShader = string.Format(@"{0}\Resources\BasicVertexShader.vsl", Environment.CurrentDirectory),
-                ShaderType = ShaderType.VertexShader
-            };
+                               {
+                                       LocationToShader = string.Format(@"{0}\Resources\BasicVertexShader.vsl", Environment.CurrentDirectory),
+                                       ShaderType = ShaderType.VertexShader
+                               };
 
             var fragmentShader = new ShaderProgram()
-            {
-                LocationToShader = string.Format(@"{0}\Resources\BasicFragmentShader.fsl", Environment.CurrentDirectory),
-                ShaderType = ShaderType.FragmentShader
-            };
+                                 {
+                                         LocationToShader = string.Format(@"{0}\Resources\BasicFragmentShader.fsl", Environment.CurrentDirectory),
+                                         ShaderType = ShaderType.FragmentShader
+                                 };
 
-            var shadersLoaded = shader.LoadShaders(vertexShader, fragmentShader);
-
+            var shadersLoaded = _shader.LoadShaders(vertexShader, fragmentShader);
         }
 
         private void OnRenderFrame(object sender, FrameEventArgs e)
@@ -87,12 +103,21 @@ namespace TheMoveToCSharp
 
             DetermineBackGroundColor();
 
+            _shader.Bind();
+            _mesh.Render();
+
             _gameWindow.SwapBuffers();
         }
 
         private void OnResize(object sender, EventArgs e)
         {
             GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
+        }
+
+        private void OnUnload(object sender, EventArgs e)
+        {
+            _shader.Dispose();
+            _mesh.Dispose();
         }
 
         private void OnUpdateFrame(object sender, FrameEventArgs e)

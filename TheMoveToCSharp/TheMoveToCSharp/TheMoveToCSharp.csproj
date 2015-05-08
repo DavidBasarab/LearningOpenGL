@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mesh.cs" />
     <Compile Include="Sample.cs" />
     <Compile Include="PreciseTimer.cs" />
     <Compile Include="Program.cs" />

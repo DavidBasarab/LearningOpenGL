@@ -4,15 +4,31 @@ using OpenTK.Graphics.OpenGL4;
 namespace TheMoveToCSharp
 {
     //http://www.opentk.com/node/3693
-    public class Shader
+    public class Shader : IDisposable
     {
         private ShaderProgram _fragmentShader;
-        private ShaderProgram _vertexShader;
+        private int _fragmentShaderId;
         private int _program;
+        private ShaderProgram _vertexShader;
+        private int _vertexShaderId;
 
         public Shader()
         {
             _program = -1;
+        }
+
+        public void Bind()
+        {
+            GL.UseProgram(_program);
+        }
+
+        public void Dispose()
+        {
+            DeleteShader(_fragmentShaderId);
+
+            DeleteShader(_vertexShaderId);
+
+            DeleteProgramIfExists();
         }
 
         public bool LoadShaders(ShaderProgram vertexShader, ShaderProgram fragmentShader)
@@ -24,15 +40,17 @@ namespace TheMoveToCSharp
             _vertexShader = vertexShader;
             _fragmentShader = fragmentShader;
 
-            var vertexShaderId = CreateShaderOnTheGpu(vertexShader.GetSource(), ShaderType.VertexShader);
+            _vertexShaderId = CreateShaderOnTheGpu(vertexShader.GetSource(), ShaderType.VertexShader);
+
+            GL.BindAttribLocation(_program, 0, "position");
 
             // Need to bind attributes
-            Console.WriteLine("Created VertexShaderId = {0}", vertexShaderId);
+            Console.WriteLine("Created VertexShaderId = {0}", _vertexShaderId);
 
-            var fragmentShaderId = CreateShaderOnTheGpu(fragmentShader.GetSource(), ShaderType.FragmentShader);
+            _fragmentShaderId = CreateShaderOnTheGpu(fragmentShader.GetSource(), ShaderType.FragmentShader);
 
-            Console.WriteLine("Created FragmentShaderId = {0}", fragmentShaderId);
-            
+            Console.WriteLine("Created FragmentShaderId = {0}", _fragmentShaderId);
+
             var programInfo = string.Empty;
             var statusCode = -1;
 
@@ -78,6 +96,12 @@ namespace TheMoveToCSharp
         private void DeleteProgramIfExists()
         {
             if (_program > 0) GL.DeleteProgram(_program);
+        }
+
+        private void DeleteShader(int shaderId)
+        {
+            GL.DetachShader(_program, shaderId);
+            GL.DeleteShader(shaderId);
         }
     }
 }

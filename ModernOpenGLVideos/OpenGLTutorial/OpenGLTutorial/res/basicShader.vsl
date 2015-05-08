@@ -12,11 +12,11 @@ uniform mat4 transform;
 void main()
 {
     gl_Position = transform * vec4(position, 1.0);
-	// The 1.0 is how much of the transform is to perform.  
-	// It is almost like a scale
-	
-	// Saving so the Fragment shader can pick up on the value
-	texCoord0 = texCoord;
-	
-	normal0 = (transform * vec4(normal, 0.0)).xyz;
+    // The 1.0 is how much of the transform is to perform.  
+    // It is almost like a scale
+    
+    // Saving so the Fragment shader can pick up on the value
+    texCoord0 = texCoord;
+    
+    normal0 = (transform * vec4(normal, 0.0)).xyz;
 }
