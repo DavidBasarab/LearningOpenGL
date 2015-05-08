@@ -74,14 +74,24 @@ namespace OpenTKBasics
             GL.Enable(EnableCap.Texture2D);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            var world = Matrix4.CreateOrthographicOffCenter(0, Window.Width, Window.Height, 0, 0, 1);
-            GL.MatrixMode(MatrixMode.Modelview);
+            var projection = Matrix4.CreateOrthographicOffCenter(0, Window.Width, Window.Height, 0, 0, 1);
+            GL.MatrixMode(MatrixMode.Projection);
 
-            GL.LoadMatrix(ref world);
+            GL.LoadMatrix(ref projection);
 
             //DrawOldSchoolVertexes();
 
+            Matrix4 world = Matrix4.CreateTranslation(100, 100, 0);
+            GL.MatrixMode(MatrixMode.Modelview);
+            GL.LoadMatrix(ref world);
+
             DrawVertexBuffers();
+
+            world = Matrix4.CreateTranslation(200, 100, 0);
+            GL.MatrixMode(MatrixMode.Modelview);
+            GL.LoadMatrix(ref world);
+
+            GL.DrawArrays(PrimitiveType.Quads, 0, _vertexBuffer.Length);
 
             GL.Flush();
 
@@ -103,9 +113,12 @@ namespace OpenTKBasics
                                     new Vertex(new Vector2(300, 0), new Vector2(1, 0)),
                                     new Vertex(new Vector2(300, 300), new Vector2(1, 1))
                                     {
-                                            Color = Color.Red
+                                            Color = Color.FromArgb(0, Color.Transparent)
                                     },
-                                    new Vertex(new Vector2(0, 300), new Vector2(0, 1)),
+                                    new Vertex(new Vector2(0, 300), new Vector2(0, 1))
+                                    {
+                                            Color = Color.FromArgb(0, Color.Transparent)
+                                    },
                                     //new Vertex(new Vector2(200, 0), new Vector2(0, 0)),
                                     //new Vertex(new Vector2(200, 100), new Vector2(0, 1))
                             };
