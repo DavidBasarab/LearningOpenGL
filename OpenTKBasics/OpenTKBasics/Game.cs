@@ -8,6 +8,8 @@ namespace OpenTKBasics
 {
     public class Game
     {
+        private uint[] _indexBuffer;
+        private int _indexBufferObject;
         private Vertex[] _vertexBuffer;
         private int _vertexBufferObject;
         public Texture2D Texture2D { get; set; }
@@ -48,7 +50,7 @@ namespace OpenTKBasics
             GL.EnableClientState(ArrayCap.ColorArray);
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.EnableClientState(ArrayCap.TextureCoordArray);
-            
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
 
             // The order of the pointers matter on how the struct is order is right now color, position, texCoord
@@ -56,10 +58,13 @@ namespace OpenTKBasics
             GL.ColorPointer(4, ColorPointerType.Float, Vertex.SizeInBytes, (IntPtr)(0)); // Step over Position and Texture
             GL.VertexPointer(2, VertexPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector4.SizeInBytes));
             GL.TexCoordPointer(2, TexCoordPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector4.SizeInBytes + Vector2.SizeInBytes));
-            
+
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _indexBufferObject);
 
             //GL.Color3(Color.BlueViolet);
-            GL.DrawArrays(PrimitiveType.Quads, 0, _vertexBuffer.Length);
+            //GL.DrawArrays(PrimitiveType.Quads, 0, _vertexBuffer.Length);
+
+            GL.DrawElements(PrimitiveType.Quads, _indexBuffer.Length, DrawElementsType.UnsignedInt, 0);
         }
 
         private void OnClosing(object sender, CancelEventArgs e) {}
@@ -81,17 +86,17 @@ namespace OpenTKBasics
 
             //DrawOldSchoolVertexes();
 
-            Matrix4 world = Matrix4.CreateTranslation(100, 100, 0);
+            var world = Matrix4.CreateTranslation(100, 100, 0);
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadMatrix(ref world);
 
             DrawVertexBuffers();
 
-            world = Matrix4.CreateTranslation(200, 100, 0);
-            GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadMatrix(ref world);
+            //world = Matrix4.CreateTranslation(200, 100, 0);
+            //GL.MatrixMode(MatrixMode.Modelview);
+            //GL.LoadMatrix(ref world);
 
-            GL.DrawArrays(PrimitiveType.Quads, 0, _vertexBuffer.Length);
+            //GL.DrawArrays(PrimitiveType.Quads, 0, _vertexBuffer.Length);
 
             GL.Flush();
 
@@ -119,9 +124,15 @@ namespace OpenTKBasics
                                     {
                                             Color = Color.FromArgb(0, Color.Transparent)
                                     },
-                                    //new Vertex(new Vector2(200, 0), new Vector2(0, 0)),
-                                    //new Vertex(new Vector2(200, 100), new Vector2(0, 1))
+                                    new Vertex(new Vector2(0, 500), new Vector2(0, 0)),
+                                    new Vertex(new Vector2(300, 500), new Vector2(1, 0)),
                             };
+
+            _indexBuffer = new uint[]
+                           {
+                                   0, 1, 2, 3,
+                                   4, 5, 2, 3
+                           };
 
             _vertexBufferObject = GL.GenBuffer();
 
@@ -130,6 +141,13 @@ namespace OpenTKBasics
             GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Vertex.SizeInBytes * _vertexBuffer.Length), _vertexBuffer, BufferUsageHint.StaticDraw);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+
+            _indexBufferObject = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _indexBufferObject);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(sizeof(uint) * _indexBuffer.Length), _indexBuffer, BufferUsageHint.StaticDraw);
+
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+
         }
 
         private void RegisterForEvents()
