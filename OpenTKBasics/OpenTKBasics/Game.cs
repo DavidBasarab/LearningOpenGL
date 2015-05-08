@@ -32,10 +32,36 @@ namespace OpenTKBasics
             GL.Enable(EnableCap.Texture2D);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
-            Matrix4 world = Matrix4.CreateOrthographicOffCenter(0, Window.Width, Window.Height, 0, 0, 1);
+            var world = Matrix4.CreateOrthographicOffCenter(0, Window.Width, Window.Height, 0, 0, 1);
+            GL.MatrixMode(MatrixMode.Modelview);
 
             GL.LoadMatrix(ref world);
 
+            DrawOldSchoolVertexes();
+
+            DrawVertexBuffers();
+
+            GL.Flush();
+
+            Window.SwapBuffers();
+        }
+
+        private void DrawVertexBuffers()
+        {
+            GL.EnableClientState(ArrayCap.VertexArray);
+            GL.EnableClientState(ArrayCap.TextureCoordArray);
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
+
+            GL.VertexPointer(2, VertexPointerType.Float, Vector2.SizeInBytes * 2, 0);
+            GL.TexCoordPointer(2, TexCoordPointerType.Float, Vector2.SizeInBytes * 2, Vector2.SizeInBytes);
+
+            GL.Color3(Color.BlueViolet);
+            GL.DrawArrays(PrimitiveType.Quads, 0, _vertexBuffer.Length / 2);
+        }
+
+        private static void DrawOldSchoolVertexes()
+        {
             GL.Begin(PrimitiveType.Quads);
 
             // 0, 0 Center
@@ -55,22 +81,6 @@ namespace OpenTKBasics
             GL.Vertex2(0, 100);
 
             GL.End();
-
-            
-            GL.EnableClientState(ArrayCap.VertexArray);
-            GL.EnableClientState(ArrayCap.TextureCoordArray);
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
-
-            GL.VertexPointer(2, VertexPointerType.Float, Vector2.SizeInBytes * 2, 0);
-            GL.TexCoordPointer(2, TexCoordPointerType.Float, Vector2.SizeInBytes * 2, Vector2.SizeInBytes);
-
-            GL.Color3(Color.BlueViolet);
-            GL.DrawArrays(PrimitiveType.Quads, 0, _vertexBuffer.Length / 2);
-
-            GL.Flush();
-
-            Window.SwapBuffers();
         }
 
         private void OnUpdateFrame(object sender, FrameEventArgs e)
@@ -84,10 +94,10 @@ namespace OpenTKBasics
 
             _vertexBuffer = new[]
                             {
-                                    new Vector2(0, 100), new Vector2(0, 0), 
-                                    new Vector2(100, 100), new Vector2(1, 0), 
-                                    new Vector2(100, 200),new Vector2(1, 1), 
-                                    new Vector2(0, 200),new  Vector2(0, 1), 
+                                    new Vector2(0, 100), new Vector2(0, 0),
+                                    new Vector2(100, 100), new Vector2(1, 0),
+                                    new Vector2(100, 200), new Vector2(1, 1),
+                                    new Vector2(0, 200), new Vector2(0, 1)
                             };
 
             _vertexBufferObject = GL.GenBuffer();
