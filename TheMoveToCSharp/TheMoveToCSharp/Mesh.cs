@@ -1,90 +1,110 @@
 ﻿using System;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace TheMoveToCSharp
 {
     internal struct Vertex
     {
-        public const int STRIDE = 12;
-        public float X, Y, Z;
+        public Vector4 color;
+        public Vector2 position;
+        public Vector2 texCoord;
 
-        public Vertex(float x, float y, float z)
+        public Color Color
         {
-            X = x;
-            Y = y;
-            Z = z;
+            get { return Color.FromArgb((int)(255 * color.W), (int)(255 * color.X), (int)(255 * color.Y), (int)(255 * color.Z)); }
+            set { color = new Vector4(value.R / 255f, value.G / 255f, value.B / 255f, value.A / 255f); }
+        }
+
+        public static int SizeInBytes
+        {
+            get { return Marshal.SizeOf(typeof(Vertex)); }
+        }
+
+        public Vertex(Vector2 position, Vector2 texCoord)
+        {
+            this.position = position;
+            this.texCoord = texCoord;
+            color = new Vector4(1, 1, 1, 1);
         }
     }
 
     public class Mesh : IDisposable
     {
-        private int _eboId;
-        private int _vboId;
+        private uint[] _indexBuffer;
+        private int _indexBufferId;
+        private Vertex[] _vertexBuffer;
+        private int _vertexBufferId;
 
-        private readonly ushort[] _indices =
+        public void Dispose()
         {
-                0, 1, 2
-        };
-
-        private readonly Vertex[] _vertices =
-        {
-                //new Vertex(-0.5f, -0.5f, 0f),
-                //new Vertex(0f, 0.5f, 0f),
-                //new Vertex(-0.5f, -0.5f, 0f),
-
-                new Vertex(0.0f, 0.0f, 0.0f),
-                new Vertex(100f, 0.0f, 0f),
-                new Vertex(0.0f, -100.0f, 0f)
-        };
+            //GL.DeleteBuffers();
+        }
 
         public void InitializeVertexBuffers()
         {
-            GL.GenBuffers(1, out _vboId);
+            _vertexBuffer = new[]
+                            {
+                                    new Vertex(new Vector2(0, 0), new Vector2(0, 0)),
+                                    new Vertex(new Vector2(300, 0), new Vector2(1, 0)),
+                                    new Vertex(new Vector2(300, 300), new Vector2(1, 1))
+                                    {
+                                            Color = Color.FromArgb(0, Color.DarkViolet)
+                                    },
+                                    new Vertex(new Vector2(0, 300), new Vector2(0, 1))
+                                    {
+                                            Color = Color.FromArgb(0, Color.Goldenrod)
+                                    },
+                                    new Vertex(new Vector2(0, 500), new Vector2(0, 0)),
+                                    new Vertex(new Vector2(300, 500), new Vector2(1, 0))
+                            };
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vboId);
+            _indexBuffer = new uint[]
+                           {
+                                   0, 1, 2, 3
+                                   //4, 5, 2, 3
+                           };
 
-            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(_vertices.Length * Vertex.STRIDE), _vertices, BufferUsageHint.StaticDraw);
+            _vertexBufferId = GL.GenBuffer();
 
-            // Should this be put in a finally?
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferId);
+
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Vertex.SizeInBytes * _vertexBuffer.Length), _vertexBuffer, BufferUsageHint.StaticDraw);
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
-            GL.GenBuffers(1, out _eboId);
+            _indexBufferId = GL.GenBuffer();
 
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _eboId);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _indexBufferId);
 
-            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(_indices.Length * sizeof(ushort)), _indices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(sizeof(uint) * _indexBuffer.Length), _indexBuffer, BufferUsageHint.StaticDraw);
+
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
         }
 
         public void Render()
         {
-            GL.PushMatrix();
+            var world = Matrix4.CreateTranslation(200, 200, 0);
 
-            //So you can see it onscreen :P
-            GL.Translate(-50, 50, -100);
+            GL.MatrixMode(MatrixMode.Modelview);
+            GL.LoadMatrix(ref world);
 
-            //We dont have color data so it will resort to the last use GL_Color
-            GL.Color3(1.0f, 1.0f, 1.0f);
-
+            GL.EnableClientState(ArrayCap.ColorArray);
             GL.EnableClientState(ArrayCap.VertexArray);
+            GL.EnableClientState(ArrayCap.TextureCoordArray);
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vboId);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferId);
 
-            GL.VertexPointer(3, VertexPointerType.Float, Vertex.STRIDE, 0);
+            GL.ColorPointer(4, ColorPointerType.Float, Vertex.SizeInBytes, (IntPtr)0);
+            GL.VertexPointer(2, VertexPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector4.SizeInBytes));
+            GL.TexCoordPointer(2, TexCoordPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector4.SizeInBytes + Vector2.SizeInBytes));
 
-            GL.DrawElements(BeginMode.Triangles, _indices.Length, DrawElementsType.UnsignedShort, 0);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _indexBufferId);
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+            GL.DrawElements(PrimitiveType.Quads, _indexBuffer.Length, DrawElementsType.UnsignedInt, 0);
 
-            GL.DisableClientState(ArrayCap.VertexArray);
-
-            GL.PopMatrix();
-        }
-
-        public void Dispose()
-        {
-            //GL.DeleteBuffers();
         }
     }
 }

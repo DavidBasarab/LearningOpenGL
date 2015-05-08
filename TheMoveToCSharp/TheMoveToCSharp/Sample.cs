@@ -1,8 +1,9 @@
 ﻿using System;
 using OpenTK;
 using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL4;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
+using ShaderType = OpenTK.Graphics.OpenGL4.ShaderType;
 
 namespace TheMoveToCSharp
 {
@@ -92,7 +93,7 @@ namespace TheMoveToCSharp
                                          ShaderType = ShaderType.FragmentShader
                                  };
 
-            var shadersLoaded = _shader.LoadShaders(vertexShader, fragmentShader);
+            //var shadersLoaded = _shader.LoadShaders(vertexShader, fragmentShader);
         }
 
         private void OnRenderFrame(object sender, FrameEventArgs e)
@@ -103,8 +104,15 @@ namespace TheMoveToCSharp
 
             DetermineBackGroundColor();
 
-            _shader.Bind();
+            var projection = Matrix4.CreateOrthographicOffCenter(0, _gameWindow.Width, _gameWindow.Height, 0, 0, 1);
+            GL.MatrixMode(MatrixMode.Projection);
+
+            GL.LoadMatrix(ref projection);
+
+            //_shader.Bind();
             _mesh.Render();
+
+            GL.Flush();
 
             _gameWindow.SwapBuffers();
         }
